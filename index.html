@@ -538,6 +538,9 @@ copyAll.addEventListener('click', ()=>{
   if(!list) return showToast('No suggestions');
   navigator.clipboard.writeText(list); showToast('All copied');
 });
+/* ===== init ===== */
+loadSettings();
+renderHistory();
 
   <!-- 👇 Footer -->
 <footer style="
@@ -571,10 +574,6 @@ copyAll.addEventListener('click', ()=>{
        style="width:24px; height:24px; border-radius:50%;">
   <span>by Sahil</span>
 </div>
-
-/* ===== init ===== */
-loadSettings();
-renderHistory();
 </script>
 </body>
 </html>
