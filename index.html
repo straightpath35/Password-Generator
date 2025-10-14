@@ -1,580 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>🔐 Password Tools</title>
-<style>
-  /* ===== base (based on your original style) ===== */
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;color:#1f2937;
-  }
-  
-  .container{
-    background:white;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.1);
-    overflow:hidden;max-width:920px;width:100%;
-  }
-
-  .header{
-    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:28px;text-align:center;
-  }
-  .header h1{font-size:2.2em;margin-bottom:6px}
-  .header p{opacity:0.92;margin-top:4px}
-
-  .tabs{display:flex;background:#f8f9fa;border-bottom:1px solid #e9ecef}
-  .tab{flex:1;padding:15px;text-align:center;cursor:pointer;background:none;border:none;font-size:16px;font-weight:600;transition:all .25s}
-  .tab.active{background:white;color:#667eea;border-bottom:3px solid #667eea}
-
-  .main{display:flex;gap:20px;padding:28px}
-  .left{flex:1}
-  .right{width:360px}
-
-  .card{background:white;padding:18px;border-radius:12px;border:1px solid #f1f1f1;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-  .input-group{margin-bottom:16px}
-  label{display:block;margin-bottom:8px;font-weight:700;color:#495057}
-  input[type="text"],input[type="password"],input[type="number"],textarea{
-    width:100%;padding:12px;border-radius:10px;border:2px solid #e9ecef;font-size:15px;
-  }
-  input:focus,textarea:focus{outline:none;border-color:#667eea}
-  .checkbox-group{display:flex;align-items:center;margin:8px 0}
-  .checkbox-group input{margin-right:10px}
-  .slider-container{display:flex;align-items:center;gap:12px}
-  .slider{flex:1}
-  .slider-value{font-weight:700;color:#667eea;min-width:30px;text-align:right}
-
-  .btn{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;width:100%}
-  .btn.small{padding:8px 10px;width:auto}
-  .btn.ghost{background:#f8f9fa;color:#333;border:1px solid #e9ecef}
-
-  .password-display{
-    margin-top:12px;background:#f8f9fa;border:2px dashed #dee2e6;padding:14px;border-radius:10px;font-family:monospace;font-size:18px;text-align:center;word-break:break-all;display:flex;justify-content:space-between;align-items:center;gap:12px;
-  }
-
-  .history-item{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:#fafafa;border:1px solid #eee;margin-bottom:8px;font-family:monospace}
-  .history-controls{display:flex;gap:8px}
-
-  .strength-meter{height:10px;background:#e9ecef;border-radius:6px;overflow:hidden;margin-top:8px}
-  .strength-fill{height:100%;width:0%;transition:width .25s ease,background .25s}
-  .s-veryweak{background:#ff5f6d}
-  .s-weak{background:#ff9a66}
-  .s-fair{background:#ffc857}
-  .s-good{background:#9be15d}
-  .s-strong{background:#28a745}
-
-  .suggestions{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-  .suggestion{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;background:#fafafa;border:1px solid #eee;font-family:monospace}
-
-  .toast{position:fixed;right:20px;bottom:20px;background:rgba(0,0,0,0.78);color:white;padding:10px 14px;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,0.3);display:none;z-index:9999}
-
-  footer.small{font-size:13px;color:#6c757d;margin-top:8px;text-align:center}
-
-  /* responsive */
-@media (max-width:900px){
-  body{
-    align-items: flex-start;
-    padding: 10px;
-  }
-  .container{
-    border-radius: 14px;
-    box-shadow: none;
-    max-width: 100%;
-  }
-  .header h1{ font-size: 1.6em; }
-  .tabs{
-    flex-direction: column;
-  }
-  .tab{
-    width: 100%;
-    border-radius: 0;
-    font-size: 15px;
-    padding: 12px;
-  }
-  .main{
-    flex-direction: column;
-    padding: 16px;
-  }
-  .left, .right{
-    width: 100%;
-  }
-  .card{
-    padding: 14px;
-  }
-  .password-display{
-    flex-direction: column;
-    font-size: 15px;
-    word-break: break-all;
-  }
-  .password-display button{
-    width: 100%;
-  }
-  .history-item{
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-  .history-controls{
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Tools - by Sahil</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
     }
-  }
-</style>
+
+    body {
+      background: #0d1117;
+      color: #e6edf3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background: #238636;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    nav button:hover {
+      background: #2ea043;
+    }
+
+    .active {
+      background: #58a6ff !important;
+    }
+
+    section {
+      display: none;
+      width: 100%;
+      max-width: 400px;
+      background: #161b22;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.05);
+    }
+
+    section.active {
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      outline: none;
+      background: #21262d;
+      color: white;
+    }
+
+    button.action {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+      background: #238636;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button.action:hover {
+      background: #2ea043;
+    }
+
+    .result {
+      margin-top: 15px;
+      text-align: center;
+      background: #0d1117;
+      padding: 10px;
+      border-radius: 6px;
+      word-break: break-all;
+      font-weight: bold;
+      color: #00bfff;
+    }
+
+    .show-password {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #999;
+      padding-bottom: 50px;
+    }
+
+    #creator-badge {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+    #creator-badge img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+    }
+  </style>
 </head>
+
 <body>
-  <div class="container" role="application" aria-label="Password Tools">
-    <div class="header">
-      <h1>🔐 Password Tools</h1>
-      <p>Generate, enhance, and evaluate passwords — secure and easy</p>
+  <header>
+    <h1>Password Tools 🔐</h1>
+    <p>Generate and check your passwords securely</p>
+  </header>
+
+  <nav>
+    <button id="genTab" class="active">Password Generator</button>
+    <button id="checkTab">Password Checker</button>
+  </nav>
+
+  <!-- Password Generator Section -->
+  <section id="generator" class="active">
+    <label>Password Length:</label>
+    <input type="number" id="length" min="4" max="32" value="12">
+
+    <label><input type="checkbox" id="upper" checked> Include Uppercase</label>
+    <label><input type="checkbox" id="lower" checked> Include Lowercase</label>
+    <label><input type="checkbox" id="numbers" checked> Include Numbers</label>
+    <label><input type="checkbox" id="symbols"> Include Symbols</label>
+
+    <button class="action" id="generateBtn">Generate Password</button>
+
+    <div class="result" id="generated"></div>
+  </section>
+
+  <!-- Password Checker Section -->
+  <section id="checker">
+    <label>Enter Password to Check:</label>
+    <input type="password" id="checkInput">
+
+    <div class="show-password">
+      <input type="checkbox" id="showPass"> <label for="showPass">Show password</label>
     </div>
 
-    <div class="tabs" role="tablist" aria-label="Tools tabs">
-      <button class="tab active" onclick="switchTab('generator', this)" role="tab" aria-selected="true">Password Generator</button>
-      <button class="tab" onclick="switchTab('checker', this)" role="tab">Password Checker</button>
-      <button class="tab" onclick="switchTab('enhancer', this)" role="tab">Password Enhancer</button>
-    </div>
+    <button class="action" id="checkBtn">Check Strength</button>
+    <div class="result" id="checkResult"></div>
+  </section>
 
-    <div class="main">
-      <!-- LEFT: main content area (the chosen tab fills this) -->
-      <div class="left">
+  <footer>Made by <strong style="color:#00bfff;">Sahil</strong></footer>
 
-        <!-- Generator -->
-        <div id="generator" class="card tab-content active" role="tabpanel">
-          <h2 style="margin-bottom:8px">Password Generator</h2>
-
-          <div class="input-group">
-            <label>Password Length: <span id="lenText">12</span></label>
-            <div class="slider-container">
-              <input type="range" id="lengthSlider" min="6" max="32" value="12" class="slider">
-              <div class="slider-value" id="lengthDisplay">12</div>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>Include in password:</label>
-            <div class="checkbox-group">
-              <input type="checkbox" id="genUpper" checked><label for="genUpper">Uppercase (A-Z)</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="genLower" checked><label for="genLower">Lowercase (a-z)</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="genNumbers" checked><label for="genNumbers">Numbers (0-9)</label>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="genSymbols"><label for="genSymbols">Symbols (!@#$%)</label>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:12px">
-            <button class="btn" id="generateBtn">Generate Password</button>
-            <button class="btn ghost" id="saveSettingsBtn" style="width:160px">Save Settings</button>
-          </div>
-
-          <div class="password-display" id="generatedArea">
-            <div id="generatedPassword">Your password will appear here</div>
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <button class="btn ghost small" id="copyGen">Copy</button>
-              <button class="btn ghost small" id="regen">Regenerate</button>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:10px;margin-top:12px">
-            <button class="btn ghost small" id="useTopSuggestion" title="Use top suggestion if present">Use Suggestion</button>
-            <button class="btn ghost small" id="addToHistoryBtn">Save to History</button>
-          </div>
-
-          <footer class="small">Tip: Click the <strong>Enhancer</strong> tab to convert a simple phrase into strong suggestions.</footer>
-        </div>
-
-        <!-- Checker -->
-        <div id="checker" class="card tab-content" role="tabpanel" style="display:none">
-          <h2 style="margin-bottom:8px">Password Checker</h2>
-
-          <div class="input-group">
-            <label for="passwordInput">Enter your password:</label>
-            <input type="password" id="passwordInput" placeholder="Type your password here...">
-          </div>
-
-          <div class="strength-meter" aria-hidden="true">
-            <div class="strength-fill" id="strengthFill"></div>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
-            <div id="strengthText" class="small" style="font-weight:700">Enter a password</div>
-            <div style="margin-left:auto;display:flex;gap:8px">
-              <button class="btn ghost small" id="suggestFromChecker">Suggest</button>
-              <button class="btn ghost small" id="copyChecker">Copy</button>
-            </div>
-          </div>
-
-          <div style="margin-top:12px">
-            <h4 style="margin-bottom:8px">Password Requirements</h4>
-            <div id="reqs">
-              <div id="reqLen">❌ At least 8 characters</div>
-              <div id="reqUpper">❌ Uppercase letter</div>
-              <div id="reqLower">❌ Lowercase letter</div>
-              <div id="reqNumber">❌ Number</div>
-              <div id="reqSymbol">❌ Symbol</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Enhancer -->
-        <div id="enhancer" class="card tab-content" role="tabpanel" style="display:none">
-          <h2 style="margin-bottom:8px">Password Enhancer</h2>
-          <div class="input-group">
-            <label for="userInput">Enter a word/phrase (example: <em>Worldisdelusion1</em>)</label>
-            <input type="text" id="userInput" placeholder="Type a memorable phrase or weak password">
-          </div>
-
-          <div style="display:flex;gap:12px">
-            <button class="btn" id="enhanceBtn">Suggest Stronger Passwords</button>
-            <button class="btn ghost" id="enhancerOptionsBtn" style="width:160px">Options</button>
-          </div>
-
-          <div class="suggestions" id="suggestionsArea" aria-live="polite" style="margin-top:12px">
-            <!-- suggestions inserted here -->
-          </div>
-
-          <div style="display:flex;gap:12px;margin-top:12px">
-            <button class="btn ghost small" id="applyTop">Use Top Suggestion</button>
-            <button class="btn ghost small" id="copyAll">Copy All</button>
-          </div>
-
-          <footer class="small">Enhancer transforms your phrase using leetspeak, mixed caps, symbol insertion and randomized tweaks. Use a suggestion or copy it to clipboard.</footer>
-        </div>
-
-      </div>
-
-      <!-- RIGHT: history and helper -->
-      <div class="right">
-        <div class="card" style="margin-bottom:16px">
-          <h3 style="margin-bottom:8px">Password History</h3>
-          <div id="history" style="max-height:300px;overflow:auto;padding-right:6px">
-            <div class="small">No passwords yet — generate or enhance one.</div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:12px">
-            <button class="btn ghost" id="clearHistory">Clear history</button>
-            <button class="btn ghost" id="exportHistory">Export</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-bottom:8px">Quick Actions</h3>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn ghost" id="downloadPage">Download HTML</button>
-            <button class="btn ghost" id="resetAll">Reset All (settings+history)</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
+  <div id="creator-badge" onclick="window.open('https://github.com/straightpath35', '_blank')">
+    <img src="https://github.com/straightpath35.png" alt="Sahil">
+    <span>by Sahil</span>
   </div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const genTab = document.getElementById('genTab');
+    const checkTab = document.getElementById('checkTab');
+    const generator = document.getElementById('generator');
+    const checker = document.getElementById('checker');
+    const generated = document.getElementById('generated');
+    const checkResult = document.getElementById('checkResult');
+    const checkInput = document.getElementById('checkInput');
+    const showPass = document.getElementById('showPass');
 
-<script>
-/* ===== utility helpers ===== */
-const $ = sel => document.querySelector(sel);
-const $$ = sel => Array.from(document.querySelectorAll(sel));
-const LS = localStorage;
-const LS_KEYS = { HISTORY: 'pw_hist_v2', SETTINGS: 'pw_set_v2' };
-const HISTORY_MAX = 12;
+    // Tab switcher
+    genTab.onclick = () => {
+      genTab.classList.add('active');
+      checkTab.classList.remove('active');
+      generator.classList.add('active');
+      checker.classList.remove('active');
+    };
 
-function showToast(msg, t=1600){
-  const el = $('#toast');
-  el.textContent = msg; el.style.display='block'; el.style.opacity = 1;
-  setTimeout(()=>{ el.style.opacity = 0; setTimeout(()=> el.style.display='none', 300); }, t);
-}
+    checkTab.onclick = () => {
+      checkTab.classList.add('active');
+      genTab.classList.remove('active');
+      checker.classList.add('active');
+      generator.classList.remove('active');
+    };
 
-/* ===== tabs ===== */
-function switchTab(name, btn){
-  // hide all
-  $$('.tab-content').forEach(x => { x.style.display='none'; x.classList.remove('active'); });
-  $$('.tab').forEach(t => t.classList.remove('active'));
-  // show selected
-  const panel = $('#'+name);
-  if(panel){ panel.style.display = ''; panel.classList.add('active'); }
-  if(btn) btn.classList.add('active');
-  // focus first input
-  const input = panel.querySelector('input, textarea, button');
-  if(input) input.focus();
-}
+    // Password Generator
+    document.getElementById('generateBtn').onclick = () => {
+      const length = document.getElementById('length').value;
+      const upper = document.getElementById('upper').checked;
+      const lower = document.getElementById('lower').checked;
+      const numbers = document.getElementById('numbers').checked;
+      const symbols = document.getElementById('symbols').checked;
 
-/* ===== generation, settings & history ===== */
-const lengthSlider = $('#lengthSlider'), lengthDisplay = $('#lengthDisplay'), lenText = $('#lenText');
-const genUpper = $('#genUpper'), genLower = $('#genLower'), genNumbers = $('#genNumbers'), genSymbols = $('#genSymbols');
-const generateBtn = $('#generateBtn'), copyGen = $('#copyGen'), regen = $('#regen');
-const generatedPassword = $('#generatedPassword');
-const saveSettingsBtn = $('#saveSettingsBtn'), addToHistoryBtn = $('#addToHistoryBtn');
-const historyDiv = $('#history'), clearHistory = $('#clearHistory'), exportHistory = $('#exportHistory');
-const useTopSuggestion = $('#useTopSuggestion');
+      let chars = '';
+      if (upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      if (lower) chars += 'abcdefghijklmnopqrstuvwxyz';
+      if (numbers) chars += '0123456789';
+      if (symbols) chars += '!@#$%^&*()_+{}[]<>?';
 
-function loadSettings(){
-  const raw = LS.getItem(LS_KEYS.SETTINGS);
-  if(raw){
-    try{
-      const s = JSON.parse(raw);
-      lengthSlider.value = s.length || 12;
-      genUpper.checked = s.upper; genLower.checked = s.lower;
-      genNumbers.checked = s.nums; genSymbols.checked = s.syms;
-    }catch(e){}
-  }
-  lengthDisplay.textContent = lengthSlider.value;
-  lenText.textContent = lengthSlider.value;
-}
-function saveSettings(){
-  const s = { length: Number(lengthSlider.value), upper: genUpper.checked, lower: genLower.checked, nums: genNumbers.checked, syms: genSymbols.checked };
-  LS.setItem(LS_KEYS.SETTINGS, JSON.stringify(s));
-  showToast('Settings saved');
-}
-saveSettingsBtn.addEventListener('click', saveSettings);
+      if (chars === '') {
+        generated.innerText = 'Select at least one option!';
+        return;
+      }
 
-lengthSlider.addEventListener('input', ()=> { lengthDisplay.textContent = lengthSlider.value; lenText.textContent = lengthSlider.value; });
+      let password = '';
+      for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
 
-function getHistory(){ try{ return JSON.parse(LS.getItem(LS_KEYS.HISTORY) || '[]'); }catch(e){ return []; } }
-function saveHistory(arr){ LS.setItem(LS_KEYS.HISTORY, JSON.stringify(arr.slice(0,HISTORY_MAX))); renderHistory(); }
-function addHistory(pw){
-  if(!pw || !pw.trim()) return;
-  let arr = getHistory();
-  arr = arr.filter(x => x !== pw);
-  arr.unshift(pw);
-  if(arr.length > HISTORY_MAX) arr = arr.slice(0, HISTORY_MAX);
-  saveHistory(arr);
-  showToast('Saved to history');
-}
-function clearHistoryFn(){ LS.removeItem(LS_KEYS.HISTORY); renderHistory(); showToast('History cleared'); }
-clearHistory.addEventListener('click', ()=> { if(confirm('Clear saved history?')) clearHistoryFn(); });
+      generated.innerText = password;
+    };
 
-exportHistory.addEventListener('click', ()=>{
-  const arr = getHistory();
-  if(!arr.length) return showToast('Nothing to export');
-  const blob = new Blob([JSON.stringify(arr, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'password-history.json'; a.click();
-  URL.revokeObjectURL(url); showToast('Exported history');
-});
+    // Show password toggle
+    showPass.addEventListener('change', () => {
+      checkInput.type = showPass.checked ? 'text' : 'password';
+    });
 
-function renderHistory(){
-  const arr = getHistory();
-  if(!arr.length){ historyDiv.innerHTML = '<div class="small">No passwords yet — generate or enhance one.</div>'; return; }
-  historyDiv.innerHTML = '';
-  arr.forEach((pw, idx)=> {
-    const div = document.createElement('div'); div.className = 'history-item';
-    div.innerHTML = `<div style="flex:1;word-break:break-all">${pw}</div>
-      <div class="history-controls">
-        <button class="btn ghost small" data-use="${idx}">Use</button>
-        <button class="btn ghost small" data-copy="${idx}">Copy</button>
-        <button class="btn ghost small" data-remove="${idx}" style="color:#c53030">✕</button>
-      </div>`;
-    historyDiv.appendChild(div);
-  });
-}
-historyDiv.addEventListener('click', (e)=>{
-  const use = e.target.getAttribute('data-use');
-  const copy = e.target.getAttribute('data-copy');
-  const rem = e.target.getAttribute('data-remove');
-  let arr = getHistory();
-  if(use !== null){ generatedPassword.textContent = arr[Number(use)]; showToast('Loaded to generator'); }
-  else if(copy !== null){ navigator.clipboard.writeText(arr[Number(copy)]); showToast('Copied'); }
-  else if(rem !== null){ arr.splice(Number(rem),1); saveHistory(arr); showToast('Removed'); }
-});
+    // Password Checker
+    document.getElementById('checkBtn').onclick = () => {
+      const password = checkInput.value;
+      let score = 0;
 
-document.getElementById('downloadPage').addEventListener('click', ()=> {
-  const html = '<!-- Downloaded HTML from Password Tools -->\n' + document.documentElement.outerHTML;
-  const blob = new Blob([html], {type:'text/html'}); const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'password-tools.html'; a.click(); URL.revokeObjectURL(url); showToast('Downloaded page');
-});
+      if (password.length >= 8) score++;
+      if (/[A-Z]/.test(password)) score++;
+      if (/[a-z]/.test(password)) score++;
+      if (/[0-9]/.test(password)) score++;
+      if (/[^A-Za-z0-9]/.test(password)) score++;
 
-document.getElementById('resetAll').addEventListener('click', ()=>{
-  if(!confirm('Reset settings and history?')) return;
-  LS.removeItem(LS_KEYS.HISTORY); LS.removeItem(LS_KEYS.SETTINGS); loadSettings(); renderHistory(); showToast('Reset complete');
-});
+      let result = '';
+      if (score <= 2) result = 'Weak ❌';
+      else if (score === 3) result = 'Moderate ⚠️';
+      else result = 'Strong ✅';
 
-/* ===== password generator (guarantee at least one of each selected type) ===== */
-function generatePassword(opts){
-  opts = opts || {
-    length: Number(lengthSlider.value),
-    uppercase: genUpper.checked,
-    lowercase: genLower.checked,
-    numbers: genNumbers.checked,
-    symbols: genSymbols.checked
-  };
-  const sets = { upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', lower: 'abcdefghijklmnopqrstuvwxyz', num: '0123456789', sym: '!@#$%^&*()_+-=[]{}|;:,.<>?' };
-  let pool = '';
-  if(opts.uppercase) pool += sets.upper;
-  if(opts.lowercase) pool += sets.lower;
-  if(opts.numbers) pool += sets.num;
-  if(opts.symbols) pool += sets.sym;
-  if(!pool){ showToast('Select at least one character type'); return ''; }
-
-  // guarantee each active category appears once
-  const guaranteed = [];
-  if(opts.uppercase) guaranteed.push(randomChar(sets.upper));
-  if(opts.lowercase) guaranteed.push(randomChar(sets.lower));
-  if(opts.numbers) guaranteed.push(randomChar(sets.num));
-  if(opts.symbols) guaranteed.push(randomChar(sets.sym));
-
-  const arr = [];
-  const fillCount = Math.max(0, opts.length - guaranteed.length);
-  for(let i=0;i<fillCount;i++) arr.push(randomChar(pool));
-  // add guaranteed characters then shuffle
-  const full = shuffle(arr.concat(guaranteed));
-  return full.join('');
-}
-function randomChar(s){ return s.charAt(Math.floor(Math.random()*s.length)); }
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
-
-generateBtn.addEventListener('click', ()=>{
-  const pw = generatePassword();
-  if(pw){ generatedPassword.textContent = pw; addHistory(pw); showToast('Password generated') }
-});
-regen.addEventListener('click', ()=> {
-  const cur = generatePassword();
-  if(cur){ generatedPassword.textContent = cur; addHistory(cur); }
-});
-copyGen.addEventListener('click', async ()=> {
-  const pw = generatedPassword.textContent.trim();
-  if(!pw || pw === 'Your password will appear here') return showToast('No password to copy');
-  await navigator.clipboard.writeText(pw); showToast('Copied to clipboard');
-});
-addToHistoryBtn.addEventListener('click', ()=> {
-  const pw = generatedPassword.textContent.trim();
-  if(!pw || pw === 'Your password will appear here') return showToast('Nothing to save');
-  addHistory(pw);
-});
-useTopSuggestion.addEventListener('click', ()=> {
-  const top = document.querySelector('.suggestion .pw');
-  if(top) { const v = top.textContent; generatedPassword.textContent = v; showToast('Applied top suggestion'); }
-});
-
-/* ===== strength checker (reused logic) ===== */
-const passwordInput = $('#passwordInput'), strengthFill = $('#strengthFill'), strengthText = $('#strengthText');
-const reqLen = $('#reqLen'), reqUpper = $('#reqUpper'), reqLower = $('#reqLower'), reqNumber = $('#reqNumber'), reqSymbol = $('#reqSymbol');
-
-function calcScore(pw){
-  let score = 0;
-  if(pw.length >= 8) score++;
-  if(/[A-Z]/.test(pw)) score++;
-  if(/[a-z]/.test(pw)) score++;
-  if(/[0-9]/.test(pw)) score++;
-  if(/[^A-Za-z0-9]/.test(pw)) score++;
-  return score;
-}
-function updateStrengthUI(pw){
-  const score = calcScore(pw);
-  const pct = Math.floor((score/5)*100);
-  strengthFill.style.width = pct + '%';
-  strengthFill.className = 'strength-fill';
-  if(score <= 1){ strengthFill.classList.add('s-veryweak'); strengthText.textContent='Very weak'; }
-  else if(score === 2){ strengthFill.classList.add('s-weak'); strengthText.textContent='Weak'; }
-  else if(score === 3){ strengthFill.classList.add('s-fair'); strengthText.textContent='Fair'; }
-  else if(score === 4){ strengthFill.classList.add('s-good'); strengthText.textContent='Good'; }
-  else { strengthFill.classList.add('s-strong'); strengthText.textContent='Strong'; }
-
-  reqLen.textContent = (pw.length >= 8 ? '✅' : '❌') + ' At least 8 characters';
-  reqUpper.textContent = (/[A-Z]/.test(pw) ? '✅' : '❌') + ' Uppercase letter';
-  reqLower.textContent = (/[a-z]/.test(pw) ? '✅' : '❌') + ' Lowercase letter';
-  reqNumber.textContent = (/[0-9]/.test(pw) ? '✅' : '❌') + ' Number';
-  reqSymbol.textContent = (/[^A-Za-z0-9]/.test(pw) ? '✅' : '❌') + ' Symbol';
-}
-
-passwordInput.addEventListener('input', (e)=>{
-  const pw = e.target.value;
-  updateStrengthUI(pw);
-});
-
-/* ===== enhancer feature ===== */
-const userInput = $('#userInput');
-const enhanceBtn = $('#enhanceBtn');
-const suggestionsArea = $('#suggestionsArea');
-const applyTop = $('#applyTop');
-const copyAll = $('#copyAll');
-
-function enhancePassword(base){
-  if(!base) return [];
-  const maps = {'a':'@','A':'4','e':'3','E':'€','i':'1','I':'!','o':'0','O':'°','s':'$','S':'5'};
-  function tweak(s){
-    return s.split('').map(ch=>maps[ch]||ch).join('')
-      .replace(/[A-Za-z]/g, c => Math.random()<0.4 ? (Math.random()<0.5?c.toUpperCase():c.toLowerCase()) : c)
-      .replace(/(\d)/g, d => Math.random()<0.3 ? d + '!@#$%&*'[Math.floor(Math.random()*8)] : d)
-      .slice(0,32);
-  }
-  const suggestions = [];
-  for(let i=0;i<4;i++) suggestions.push(tweak(base));
-  return suggestions;
-}
-
-enhanceBtn.addEventListener('click', ()=>{
-  const base = userInput.value.trim();
-  if(!base) return showToast('Enter a word or phrase');
-  const list = enhancePassword(base);
-  suggestionsArea.innerHTML = '';
-  list.forEach(pw=>{
-    const div = document.createElement('div');
-    div.className = 'suggestion';
-    div.innerHTML = `<div class="pw">${pw}</div><button class="btn ghost small" data-copy="${pw}">Copy</button>`;
-    suggestionsArea.appendChild(div);
-  });
-  showToast('Suggestions ready');
-});
-
-suggestionsArea.addEventListener('click', (e)=>{
-  const copy = e.target.getAttribute('data-copy');
-  if(copy){ navigator.clipboard.writeText(copy); showToast('Copied'); }
-});
-
-applyTop.addEventListener('click', ()=>{
-  const top = suggestionsArea.querySelector('.pw');
-  if(top){ generatedPassword.textContent = top.textContent; addHistory(top.textContent); showToast('Applied top suggestion'); }
-});
-
-copyAll.addEventListener('click', ()=>{
-  const list = [...suggestionsArea.querySelectorAll('.pw')].map(x=>x.textContent).join('\n');
-  if(!list) return showToast('No suggestions');
-  navigator.clipboard.writeText(list); showToast('All copied');
-});
-/* ===== init ===== */
-loadSettings();
-renderHistory();
-
-  <!-- 👇 Footer -->
-<footer style="
-  text-align:center;
-  margin-top:40px;
-  font-size:14px;
-  color:#999;
-  padding-bottom:50px;">
-  Made by <strong style="color:#00bfff;">Sahil</strong>
-</footer>
-
-<!-- 👇 Floating badge -->
-<div id="creator-badge" style="
-  position: fixed;
-  bottom: 15px;
-  right: 15px;
-  background: rgba(0,0,0,0.7);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 1000;
-  cursor: pointer;"
-  onclick="window.open('https://github.com/straightpath35', '_blank')">
-
-  <img src="https://github.com/straightpath35.png" 
-       alt="Sahil" 
-       style="width:24px; height:24px; border-radius:50%;">
-  <span>by Sahil</span>
-</div>
-</script>
+      checkResult.innerText = result;
+    };
+  </script>
 </body>
 </html>
- 
