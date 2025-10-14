@@ -3,630 +3,431 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>🔐 Password Tools — Advanced</title>
+<title>🔐 Password Tools</title>
 <style>
-  :root{
-    --bg-1: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    --glass: rgba(255,255,255,0.08);
-    --card: rgba(255,255,255,0.95);
-    --text-dark: #1f2937;
-    --accent: #5b6ef3;
-    --success: #28a745;
-    --danger: #dc3545;
-    --muted: #6b7280;
-    --glass-border: rgba(255,255,255,0.12);
-  }
-  [data-theme="dark"]{
-    --glass: rgba(0,0,0,0.45);
-    --card: rgba(17,24,39,0.85);
-    --text-dark: #e6eef8;
-    --muted: #9aa4b2;
-    --glass-border: rgba(255,255,255,0.06);
-  }
-
+  /* ===== base (based on your original style) ===== */
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background: var(--bg-1);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:28px;
-    color:var(--text-dark);
-    transition: background .35s ease, color .35s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;color:#1f2937;
   }
 
-  .wrap{
-    width:100%;
-    max-width:920px;
-    margin:auto;
-    display:grid;
-    grid-template-columns: 1fr 360px;
-    gap:22px;
-    align-items:start;
+  .container{
+    background:white;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.1);
+    overflow:hidden;max-width:920px;width:100%;
   }
 
-  .card{
-    background:var(--card);
-    border-radius:14px;
-    padding:18px;
-    box-shadow: 0 10px 30px rgba(2,6,23,0.18);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(6px) saturate(120%);
-    transition: transform .18s ease, box-shadow .18s ease;
+  .header{
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:28px;text-align:center;
   }
-  .card:active{transform: translateY(1px)}
-  header.header{
-    display:flex;
-    gap:16px;
-    align-items:center;
-  }
-  .logo{
-    width:72px;height:72px;border-radius:12px;
-    display:flex;align-items:center;justify-content:center;
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-    font-size:28px;
-    box-shadow: inset 0 -6px 18px rgba(255,255,255,0.02);
-  }
-  header h1{font-size:20px}
-  header p{color:var(--muted);font-size:13px;margin-top:4px}
+  .header h1{font-size:2.2em;margin-bottom:6px}
+  .header p{opacity:0.92;margin-top:4px}
 
-  /* generator area */
-  .controls{margin-top:14px;display:grid;gap:12px}
-  .row{display:flex;gap:10px;align-items:center}
-  .row .col{flex:1}
-  .label{font-weight:700;color:var(--muted);font-size:13px;margin-bottom:6px;display:block}
-  input[type="range"]{width:100%}
-  input[type="text"], input[type="password"], select{
-    width:100%;padding:10px;border-radius:10px;border:1px solid var(--glass-border);
-    background:transparent;color:inherit;font-size:15px;
+  .tabs{display:flex;background:#f8f9fa;border-bottom:1px solid #e9ecef}
+  .tab{flex:1;padding:15px;text-align:center;cursor:pointer;background:none;border:none;font-size:16px;font-weight:600;transition:all .25s}
+  .tab.active{background:white;color:#667eea;border-bottom:3px solid #667eea}
+
+  .main{display:flex;gap:20px;padding:28px}
+  .left{flex:1}
+  .right{width:360px}
+
+  .card{background:white;padding:18px;border-radius:12px;border:1px solid #f1f1f1;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+  .input-group{margin-bottom:16px}
+  label{display:block;margin-bottom:8px;font-weight:700;color:#495057}
+  input[type="text"],input[type="password"],input[type="number"],textarea{
+    width:100%;padding:12px;border-radius:10px;border:2px solid #e9ecef;font-size:15px;
   }
-  .checkbox-row{display:flex;flex-wrap:wrap;gap:10px}
-  .chk{
-    display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--glass-border);
-    background:var(--glass);cursor:pointer;font-weight:600;font-size:13px;
-  }
-  .btn{
-    display:inline-block;padding:12px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent),#7b61ff);
-    color:white;font-weight:700;cursor:pointer;width:100%;font-size:15px;
-  }
-  .btn.secondary{background:transparent;color:var(--text-dark);border:1px solid var(--glass-border);font-weight:700}
+  input:focus,textarea:focus{outline:none;border-color:#667eea}
+  .checkbox-group{display:flex;align-items:center;margin:8px 0}
+  .checkbox-group input{margin-right:10px}
+  .slider-container{display:flex;align-items:center;gap:12px}
+  .slider{flex:1}
+  .slider-value{font-weight:700;color:#667eea;min-width:30px;text-align:right}
+
+  .btn{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer;width:100%}
+  .btn.small{padding:8px 10px;width:auto}
+  .btn.ghost{background:#f8f9fa;color:#333;border:1px solid #e9ecef}
 
   .password-display{
-    margin-top:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(255,255,255,0.03));
-    padding:12px;border-radius:10px;border:1px dashed var(--glass-border);word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:12px;
-  }
-  .pw-text{font-size:15px;flex:1}
-
-  /* right column - history & checker */
-  .right{
-    display:flex;flex-direction:column;gap:14px;
-    position:sticky;top:24px;
+    margin-top:12px;background:#f8f9fa;border:2px dashed #dee2e6;padding:14px;border-radius:10px;font-family:monospace;font-size:18px;text-align:center;word-break:break-all;display:flex;justify-content:space-between;align-items:center;gap:12px;
   }
 
-  .history-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow:auto;padding-right:6px}
-  .history-item{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;background:var(--glass);border:1px solid var(--glass-border);font-family:ui-monospace,monospace}
-  .history-item button{border:none;background:transparent;cursor:pointer;font-weight:700}
-  .small{font-size:13px;color:var(--muted)}
+  .history-item{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:#fafafa;border:1px solid #eee;margin-bottom:8px;font-family:monospace}
+  .history-controls{display:flex;gap:8px}
 
-  /* strength meter */
-  .strength-meter{height:10px;background:transparent;border-radius:8px;overflow:hidden;border:1px solid var(--glass-border)}
-  .strength-fill{height:100%;width:0%;transition:width .3s ease,background .3s ease}
+  .strength-meter{height:10px;background:#e9ecef;border-radius:6px;overflow:hidden;margin-top:8px}
+  .strength-fill{height:100%;width:0%;transition:width .25s ease,background .25s}
+  .s-veryweak{background:#ff5f6d}
+  .s-weak{background:#ff9a66}
+  .s-fair{background:#ffc857}
+  .s-good{background:#9be15d}
+  .s-strong{background:#28a745}
 
-  .meter-veryweak{background:linear-gradient(90deg,#ff5f6d,#ff9966)}
-  .meter-weak{background:linear-gradient(90deg,#ff7a59,#ffb86b)}
-  .meter-fair{background:linear-gradient(90deg,#ffb86b,#ffd36b)}
-  .meter-good{background:linear-gradient(90deg,#9be15d,#00e3a3)}
-  .meter-strong{background:linear-gradient(90deg,#00c6ff,#0072ff)}
+  .suggestions{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .suggestion{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;background:#fafafa;border:1px solid #eee;font-family:monospace}
 
-  /* toast */
-  .toast-wrap{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:9999}
-  .toast{min-width:220px;background:var(--card);border-radius:10px;padding:10px 12px;border:1px solid var(--glass-border);box-shadow:0 8px 20px rgba(2,6,23,0.18);font-weight:700}
+  .toast{position:fixed;right:20px;bottom:20px;background:rgba(0,0,0,0.78);color:white;padding:10px 14px;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,0.3);display:none;z-index:9999}
 
-  /* footer */
-  footer{margin-top:12px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;align-items:center}
+  footer.small{font-size:13px;color:#6c757d;margin-top:8px;text-align:center}
 
   /* responsive */
-  @media (max-width:880px){
-    .wrap{grid-template-columns:1fr;max-width:740px}
-    .right{position:relative;top:unset}
+  @media (max-width:900px){
+    .main{flex-direction:column}
+    .right{width:100%}
   }
 </style>
 </head>
-<body data-theme="">
-<div class="wrap">
-  <!-- Left: Generator + header -->
-  <div class="card">
-    <header class="header">
-      <div class="logo">🔐</div>
-      <div>
-        <h1>Password Tools — Pro</h1>
-        <p>Generate secure passwords • Check strength • Save history</p>
-      </div>
-      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-        <button id="themeBtn" class="btn secondary" style="width:auto;padding:8px 10px">🌗 Theme</button>
-      </div>
-    </header>
+<body>
+  <div class="container" role="application" aria-label="Password Tools">
+    <div class="header">
+      <h1>🔐 Password Tools</h1>
+      <p>Generate, enhance, and evaluate passwords — secure and easy</p>
+    </div>
 
-    <section class="controls" aria-label="Password generator">
-      <div>
-        <label class="label">Password Length <span id="lenLabel" class="small">12</span></label>
-        <input id="lengthSlider" type="range" min="6" max="48" value="12" />
-      </div>
+    <div class="tabs" role="tablist" aria-label="Tools tabs">
+      <button class="tab active" onclick="switchTab('generator', this)" role="tab" aria-selected="true">Password Generator</button>
+      <button class="tab" onclick="switchTab('checker', this)" role="tab">Password Checker</button>
+      <button class="tab" onclick="switchTab('enhancer', this)" role="tab">Password Enhancer</button>
+    </div>
 
-      <div class="checkbox-row" role="group" aria-label="Character options">
-        <label class="chk"><input id="uppercase" type="checkbox" checked style="display:none" />A-Z</label>
-        <label class="chk"><input id="lowercase" type="checkbox" checked style="display:none" />a-z</label>
-        <label class="chk"><input id="numbers" type="checkbox" checked style="display:none" />0-9</label>
-        <label class="chk"><input id="symbols" type="checkbox" style="display:none" />Symbols</label>
-      </div>
+    <div class="main">
+      <!-- LEFT: main content area (the chosen tab fills this) -->
+      <div class="left">
 
-      <div class="row">
-        <div class="col">
-          <button id="generateBtn" class="btn">Generate Password</button>
+        <!-- Generator -->
+        <div id="generator" class="card tab-content active" role="tabpanel">
+          <h2 style="margin-bottom:8px">Password Generator</h2>
+
+          <div class="input-group">
+            <label>Password Length: <span id="lenText">12</span></label>
+            <div class="slider-container">
+              <input type="range" id="lengthSlider" min="6" max="32" value="12" class="slider">
+              <div class="slider-value" id="lengthDisplay">12</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Include in password:</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="genUpper" checked><label for="genUpper">Uppercase (A-Z)</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="genLower" checked><label for="genLower">Lowercase (a-z)</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="genNumbers" checked><label for="genNumbers">Numbers (0-9)</label>
+            </div>
+            <div class="checkbox-group">
+              <input type="checkbox" id="genSymbols"><label for="genSymbols">Symbols (!@#$%)</label>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <button class="btn" id="generateBtn">Generate Password</button>
+            <button class="btn ghost" id="saveSettingsBtn" style="width:160px">Save Settings</button>
+          </div>
+
+          <div class="password-display" id="generatedArea">
+            <div id="generatedPassword">Your password will appear here</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn ghost small" id="copyGen">Copy</button>
+              <button class="btn ghost small" id="regen">Regenerate</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button class="btn ghost small" id="useTopSuggestion" title="Use top suggestion if present">Use Suggestion</button>
+            <button class="btn ghost small" id="addToHistoryBtn">Save to History</button>
+          </div>
+
+          <footer class="small">Tip: Click the <strong>Enhancer</strong> tab to convert a simple phrase into strong suggestions.</footer>
         </div>
-        <div style="width:120px">
-          <button id="saveSettingBtn" class="btn secondary">Save</button>
+
+        <!-- Checker -->
+        <div id="checker" class="card tab-content" role="tabpanel" style="display:none">
+          <h2 style="margin-bottom:8px">Password Checker</h2>
+
+          <div class="input-group">
+            <label for="passwordInput">Enter your password:</label>
+            <input type="password" id="passwordInput" placeholder="Type your password here...">
+          </div>
+
+          <div class="strength-meter" aria-hidden="true">
+            <div class="strength-fill" id="strengthFill"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+            <div id="strengthText" class="small" style="font-weight:700">Enter a password</div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button class="btn ghost small" id="suggestFromChecker">Suggest</button>
+              <button class="btn ghost small" id="copyChecker">Copy</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin-bottom:8px">Password Requirements</h4>
+            <div id="reqs">
+              <div id="reqLen">❌ At least 8 characters</div>
+              <div id="reqUpper">❌ Uppercase letter</div>
+              <div id="reqLower">❌ Lowercase letter</div>
+              <div id="reqNumber">❌ Number</div>
+              <div id="reqSymbol">❌ Symbol</div>
+            </div>
+          </div>
         </div>
+
+        <!-- Enhancer -->
+        <div id="enhancer" class="card tab-content" role="tabpanel" style="display:none">
+          <h2 style="margin-bottom:8px">Password Enhancer</h2>
+          <div class="input-group">
+            <label for="userInput">Enter a word/phrase (example: <em>Worldisdelusion1</em>)</label>
+            <input type="text" id="userInput" placeholder="Type a memorable phrase or weak password">
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <button class="btn" id="enhanceBtn">Suggest Stronger Passwords</button>
+            <button class="btn ghost" id="enhancerOptionsBtn" style="width:160px">Options</button>
+          </div>
+
+          <div class="suggestions" id="suggestionsArea" aria-live="polite" style="margin-top:12px">
+            <!-- suggestions inserted here -->
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:12px">
+            <button class="btn ghost small" id="applyTop">Use Top Suggestion</button>
+            <button class="btn ghost small" id="copyAll">Copy All</button>
+          </div>
+
+          <footer class="small">Enhancer transforms your phrase using leetspeak, mixed caps, symbol insertion and randomized tweaks. Use a suggestion or copy it to clipboard.</footer>
+        </div>
+
       </div>
 
-      <div class="password-display" aria-live="polite">
-        <div class="pw-text" id="generatedPassword">Your password will appear here</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button id="copyBtn" class="btn secondary" style="width:120px">Copy</button>
-          <button id="regenerateBtn" class="btn secondary" style="width:120px">Regenerate</button>
+      <!-- RIGHT: history and helper -->
+      <div class="right">
+        <div class="card" style="margin-bottom:16px">
+          <h3 style="margin-bottom:8px">Password History</h3>
+          <div id="history" style="max-height:300px;overflow:auto;padding-right:6px">
+            <div class="small">No passwords yet — generate or enhance one.</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn ghost" id="clearHistory">Clear history</button>
+            <button class="btn ghost" id="exportHistory">Export</button>
+          </div>
         </div>
-      </div>
 
-      <footer>
-        <div class="small">Tip: click a history item to copy quickly</div>
-        <div class="small">Built with ❤️ — public & free</div>
-      </footer>
-    </section>
+        <div class="card">
+          <h3 style="margin-bottom:8px">Quick Actions</h3>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn ghost" id="downloadPage">Download HTML</button>
+            <button class="btn ghost" id="resetAll">Reset All (settings+history)</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 
-  <!-- Right column: History + Checker -->
-  <div class="right">
-    <div class="card">
-      <h3 style="margin-bottom:8px">Password History</h3>
-      <div style="display:flex;gap:8px;margin-bottom:10px">
-        <button id="clearHistoryBtn" class="btn secondary" style="width:100%">Clear history</button>
-        <button id="exportBtn" class="btn" style="width:130px">Export</button>
-      </div>
-      <div id="historyList" class="history-list" aria-live="polite"></div>
-      <div style="margin-top:10px" class="small">Saved locally in your browser (private).</div>
-    </div>
-
-    <div class="card">
-      <h3 style="margin-bottom:8px">Password Checker</h3>
-      <input id="checkerInput" placeholder="Type or paste a password" aria-label="password to check" />
-      <div style="margin-top:8px" class="small">Real-time strength feedback</div>
-      <div style="margin-top:12px" class="strength-meter" aria-hidden="true">
-        <div id="strengthFill" class="strength-fill"></div>
-      </div>
-      <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-        <div id="strengthText" class="small" style="font-weight:800">—</div>
-        <div style="margin-left:auto">
-          <button id="suggestBtn" class="btn secondary" style="width:auto;padding:8px 10px">Suggest</button>
-        </div>
-      </div>
-
-      <div style="margin-top:12px">
-        <div class="small" style="font-weight:700">Requirements</div>
-        <ul style="margin-top:8px;color:var(--muted);font-size:13px">
-          <li id="reqLen">❌ At least 8 chars</li>
-          <li id="reqUpper">❌ Uppercase</li>
-          <li id="reqLower">❌ Lowercase</li>
-          <li id="reqNum">❌ Number</li>
-          <li id="reqSym">❌ Symbol</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="card" style="text-align:center">
-      <div style="font-weight:800">Publish-ready</div>
-      <div class="small" style="margin-top:6px">Your site is public — share the link and show your work!</div>
-      <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
-        <button id="downloadAllBtn" class="btn secondary" style="width:auto">Download</button>
-        <button id="resetBtn" class="btn" style="width:auto">Reset</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- toast container -->
-<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* ========== Utilities ========== */
-const $ = (sel) => document.querySelector(sel);
-const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-const LS = window.localStorage;
+/* ===== utility helpers ===== */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const LS = localStorage;
+const LS_KEYS = { HISTORY: 'pw_hist_v2', SETTINGS: 'pw_set_v2' };
+const HISTORY_MAX = 12;
 
-/* ========== Elements ========== */
-const lengthSlider = $('#lengthSlider');
-const lenLabel = $('#lenLabel');
-const uppercase = $('#uppercase');
-const lowercase = $('#lowercase');
-const numbers = $('#numbers');
-const symbols = $('#symbols');
-const generateBtn = $('#generateBtn');
-const regenerateBtn = $('#regenerateBtn');
-const copyBtn = $('#copyBtn');
+function showToast(msg, t=1600){
+  const el = $('#toast');
+  el.textContent = msg; el.style.display='block'; el.style.opacity = 1;
+  setTimeout(()=>{ el.style.opacity = 0; setTimeout(()=> el.style.display='none', 300); }, t);
+}
+
+/* ===== tabs ===== */
+function switchTab(name, btn){
+  // hide all
+  $$('.tab-content').forEach(x => { x.style.display='none'; x.classList.remove('active'); });
+  $$('.tab').forEach(t => t.classList.remove('active'));
+  // show selected
+  const panel = $('#'+name);
+  if(panel){ panel.style.display = ''; panel.classList.add('active'); }
+  if(btn) btn.classList.add('active');
+  // focus first input
+  const input = panel.querySelector('input, textarea, button');
+  if(input) input.focus();
+}
+
+/* ===== generation, settings & history ===== */
+const lengthSlider = $('#lengthSlider'), lengthDisplay = $('#lengthDisplay'), lenText = $('#lenText');
+const genUpper = $('#genUpper'), genLower = $('#genLower'), genNumbers = $('#genNumbers'), genSymbols = $('#genSymbols');
+const generateBtn = $('#generateBtn'), copyGen = $('#copyGen'), regen = $('#regen');
 const generatedPassword = $('#generatedPassword');
-const historyList = $('#historyList');
-const clearHistoryBtn = $('#clearHistoryBtn');
-const exportBtn = $('#exportBtn');
-const checkerInput = $('#checkerInput');
-const strengthFill = $('#strengthFill');
-const strengthText = $('#strengthText');
-const reqLen = $('#reqLen');
-const reqUpper = $('#reqUpper');
-const reqLower = $('#reqLower');
-const reqNum = $('#reqNum');
-const reqSym = $('#reqSym');
-const themeBtn = $('#themeBtn');
-const saveSettingBtn = $('#saveSettingBtn');
-const suggestBtn = $('#suggestBtn');
-const downloadAllBtn = $('#downloadAllBtn');
-const resetBtn = $('#resetBtn');
-const toastWrap = $('#toastWrap');
+const saveSettingsBtn = $('#saveSettingsBtn'), addToHistoryBtn = $('#addToHistoryBtn');
+const historyDiv = $('#history'), clearHistory = $('#clearHistory'), exportHistory = $('#exportHistory');
+const useTopSuggestion = $('#useTopSuggestion');
 
-/* ========== Config & Keys ========== */
-const LS_KEYS = {
-  HISTORY: 'pw_hist_v1',
-  SETTINGS: 'pw_settings_v1',
-  THEME: 'pw_theme_v1'
-};
-const HISTORY_MAX = 8;
-
-/* ========== Default settings ========== */
-const defaultSettings = {
-  length: 12,
-  uppercase: true,
-  lowercase: true,
-  numbers: true,
-  symbols: false
-};
-
-/* ========== Theme ========== */
-function setTheme(theme){
-  document.body.setAttribute('data-theme', theme);
-  LS.setItem(LS_KEYS.THEME, theme);
-  showToast(`Theme: ${theme}`, {timeout: 1200});
+function loadSettings(){
+  const raw = LS.getItem(LS_KEYS.SETTINGS);
+  if(raw){
+    try{
+      const s = JSON.parse(raw);
+      lengthSlider.value = s.length || 12;
+      genUpper.checked = s.upper; genLower.checked = s.lower;
+      genNumbers.checked = s.nums; genSymbols.checked = s.syms;
+    }catch(e){}
+  }
+  lengthDisplay.textContent = lengthSlider.value;
+  lenText.textContent = lengthSlider.value;
 }
-(function initTheme(){
-  const saved = LS.getItem(LS_KEYS.THEME) || 'light';
-  setTheme(saved);
-})();
-
-/* ========== Toast ========== */
-function showToast(text, {timeout=2000} = {}){
-  const el = document.createElement('div');
-  el.className = 'toast';
-  el.textContent = text;
-  toastWrap.appendChild(el);
-  setTimeout(()=> el.style.opacity = 1, 10);
-  setTimeout(()=> {
-    el.style.opacity = 0;
-    setTimeout(()=> el.remove(), 300);
-  }, timeout);
-}
-
-/* ========== Settings (save / load) ========== */
 function saveSettings(){
-  const s = {
-    length: Number(lengthSlider.value),
-    uppercase: uppercase.checked,
-    lowercase: lowercase.checked,
-    numbers: numbers.checked,
-    symbols: symbols.checked
-  };
+  const s = { length: Number(lengthSlider.value), upper: genUpper.checked, lower: genLower.checked, nums: genNumbers.checked, syms: genSymbols.checked };
   LS.setItem(LS_KEYS.SETTINGS, JSON.stringify(s));
   showToast('Settings saved');
 }
-function loadSettings(){
-  const raw = LS.getItem(LS_KEYS.SETTINGS);
-  const s = raw ? JSON.parse(raw) : defaultSettings;
-  lengthSlider.value = s.length || defaultSettings.length;
-  lenLabel.textContent = lengthSlider.value;
-  uppercase.checked = !!s.uppercase;
-  lowercase.checked = !!s.lowercase;
-  numbers.checked = !!s.numbers;
-  symbols.checked = !!s.symbols;
-}
-loadSettings();
+saveSettingsBtn.addEventListener('click', saveSettings);
 
-/* ========== History ========== */
-function getHistory(){
-  try {
-    const raw = LS.getItem(LS_KEYS.HISTORY);
-    return raw ? JSON.parse(raw) : [];
-  } catch(e){ return [] }
-}
-function saveHistory(arr){
-  LS.setItem(LS_KEYS.HISTORY, JSON.stringify(arr.slice(0, HISTORY_MAX)));
-}
-function addToHistory(pw){
-  if(!pw || pw.trim()==='') return;
+lengthSlider.addEventListener('input', ()=> { lengthDisplay.textContent = lengthSlider.value; lenText.textContent = lengthSlider.value; });
+
+function getHistory(){ try{ return JSON.parse(LS.getItem(LS_KEYS.HISTORY) || '[]'); }catch(e){ return []; } }
+function saveHistory(arr){ LS.setItem(LS_KEYS.HISTORY, JSON.stringify(arr.slice(0,HISTORY_MAX))); renderHistory(); }
+function addHistory(pw){
+  if(!pw || !pw.trim()) return;
   let arr = getHistory();
-  // avoid duplicates; newest first
   arr = arr.filter(x => x !== pw);
   arr.unshift(pw);
   if(arr.length > HISTORY_MAX) arr = arr.slice(0, HISTORY_MAX);
   saveHistory(arr);
-  renderHistory();
+  showToast('Saved to history');
 }
-function clearHistory(){
-  LS.removeItem(LS_KEYS.HISTORY);
-  renderHistory();
-  showToast('History cleared');
-}
-function renderHistory(){
-  const arr = getHistory();
-  historyList.innerHTML = '';
-  if(arr.length === 0){
-    historyList.innerHTML = '<div class="small">No passwords yet — generate one!</div>';
-    return;
-  }
-  arr.forEach((pw, idx) => {
-    const div = document.createElement('div');
-    div.className = 'history-item';
-    div.innerHTML = `
-      <div style="flex:1;font-family:ui-monospace,monospace">${pw}</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <button title="Copy" data-copy="${idx}">Copy</button>
-        <button title="Remove" data-remove="${idx}" style="color:var(--danger)">✕</button>
-      </div>
-    `;
-    historyList.appendChild(div);
-  });
-}
+function clearHistoryFn(){ LS.removeItem(LS_KEYS.HISTORY); renderHistory(); showToast('History cleared'); }
+clearHistory.addEventListener('click', ()=> { if(confirm('Clear saved history?')) clearHistoryFn(); });
 
-/* delegate history clicks */
-historyList.addEventListener('click', (e) => {
-  const copyIdx = e.target.getAttribute('data-copy');
-  const remIdx = e.target.getAttribute('data-remove');
-  if(copyIdx != null){
-    const arr = getHistory();
-    const pw = arr[Number(copyIdx)];
-    navigator.clipboard.writeText(pw);
-    showToast('Copied from history');
-  } else if(remIdx != null){
-    let arr = getHistory();
-    arr.splice(Number(remIdx),1);
-    saveHistory(arr);
-    renderHistory();
-    showToast('Removed from history');
-  } else {
-    // click on item area -> copy
-    const item = e.target.closest('.history-item');
-    if(item){
-      const pwText = item.querySelector('div').textContent.trim();
-      if(pwText){
-        navigator.clipboard.writeText(pwText);
-        showToast('Copied');
-      }
-    }
-  }
+exportHistory.addEventListener('click', ()=>{
+  const arr = getHistory();
+  if(!arr.length) return showToast('Nothing to export');
+  const blob = new Blob([JSON.stringify(arr, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'password-history.json'; a.click();
+  URL.revokeObjectURL(url); showToast('Exported history');
 });
 
-/* ========== Password generation ========== */
+function renderHistory(){
+  const arr = getHistory();
+  if(!arr.length){ historyDiv.innerHTML = '<div class="small">No passwords yet — generate or enhance one.</div>'; return; }
+  historyDiv.innerHTML = '';
+  arr.forEach((pw, idx)=> {
+    const div = document.createElement('div'); div.className = 'history-item';
+    div.innerHTML = `<div style="flex:1;word-break:break-all">${pw}</div>
+      <div class="history-controls">
+        <button class="btn ghost small" data-use="${idx}">Use</button>
+        <button class="btn ghost small" data-copy="${idx}">Copy</button>
+        <button class="btn ghost small" data-remove="${idx}" style="color:#c53030">✕</button>
+      </div>`;
+    historyDiv.appendChild(div);
+  });
+}
+historyDiv.addEventListener('click', (e)=>{
+  const use = e.target.getAttribute('data-use');
+  const copy = e.target.getAttribute('data-copy');
+  const rem = e.target.getAttribute('data-remove');
+  let arr = getHistory();
+  if(use !== null){ generatedPassword.textContent = arr[Number(use)]; showToast('Loaded to generator'); }
+  else if(copy !== null){ navigator.clipboard.writeText(arr[Number(copy)]); showToast('Copied'); }
+  else if(rem !== null){ arr.splice(Number(rem),1); saveHistory(arr); showToast('Removed'); }
+});
+
+document.getElementById('downloadPage').addEventListener('click', ()=> {
+  const html = '<!-- Downloaded HTML from Password Tools -->\n' + document.documentElement.outerHTML;
+  const blob = new Blob([html], {type:'text/html'}); const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'password-tools.html'; a.click(); URL.revokeObjectURL(url); showToast('Downloaded page');
+});
+
+document.getElementById('resetAll').addEventListener('click', ()=>{
+  if(!confirm('Reset settings and history?')) return;
+  LS.removeItem(LS_KEYS.HISTORY); LS.removeItem(LS_KEYS.SETTINGS); loadSettings(); renderHistory(); showToast('Reset complete');
+});
+
+/* ===== password generator (guarantee at least one of each selected type) ===== */
 function generatePassword(opts){
   opts = opts || {
     length: Number(lengthSlider.value),
-    uppercase: uppercase.checked,
-    lowercase: lowercase.checked,
-    numbers: numbers.checked,
-    symbols: symbols.checked
+    uppercase: genUpper.checked,
+    lowercase: genLower.checked,
+    numbers: genNumbers.checked,
+    symbols: genSymbols.checked
   };
-
-  const sets = {
-    upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-    lower: 'abcdefghijklmnopqrstuvwxyz',
-    num: '0123456789',
-    sym: '!@#$%^&*()_+[]{}<>?/|~`-='
-  };
-
+  const sets = { upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', lower: 'abcdefghijklmnopqrstuvwxyz', num: '0123456789', sym: '!@#$%^&*()_+-=[]{}|;:,.<>?' };
   let pool = '';
   if(opts.uppercase) pool += sets.upper;
   if(opts.lowercase) pool += sets.lower;
   if(opts.numbers) pool += sets.num;
   if(opts.symbols) pool += sets.sym;
+  if(!pool){ showToast('Select at least one character type'); return ''; }
 
-  if(!pool){
-    showToast('Select at least one character type', {timeout:2000});
-    return '';
-  }
-
-  // guarantee at least one of selected types appears (more secure generator)
+  // guarantee each active category appears once
   const guaranteed = [];
-  if(opts.uppercase) guaranteed.push(randomFrom(sets.upper));
-  if(opts.lowercase) guaranteed.push(randomFrom(sets.lower));
-  if(opts.numbers) guaranteed.push(randomFrom(sets.num));
-  if(opts.symbols) guaranteed.push(randomFrom(sets.sym));
+  if(opts.uppercase) guaranteed.push(randomChar(sets.upper));
+  if(opts.lowercase) guaranteed.push(randomChar(sets.lower));
+  if(opts.numbers) guaranteed.push(randomChar(sets.num));
+  if(opts.symbols) guaranteed.push(randomChar(sets.sym));
 
-  let pwArr = [];
-  for(let i=0;i<opts.length - guaranteed.length;i++){
-    pwArr.push(randomFrom(pool));
-  }
-  // insert guaranteed chars
-  pwArr = pwArr.concat(guaranteed);
-  // shuffle
-  pwArr = shuffleArray(pwArr);
-  const pw = pwArr.join('');
-  generatedPassword.textContent = pw;
-  addToHistory(pw);
-  showToast('Password generated');
-  return pw;
+  const arr = [];
+  const fillCount = Math.max(0, opts.length - guaranteed.length);
+  for(let i=0;i<fillCount;i++) arr.push(randomChar(pool));
+  // add guaranteed characters then shuffle
+  const full = shuffle(arr.concat(guaranteed));
+  return full.join('');
 }
+function randomChar(s){ return s.charAt(Math.floor(Math.random()*s.length)); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
 
-function randomFrom(str){
-  return str.charAt(Math.floor(Math.random()*str.length));
-}
-function shuffleArray(a){
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-/* ========== Copy & regen ========== */
-copyBtn.addEventListener('click', async ()=>{
-  const pw = generatedPassword.textContent.trim();
-  if(!pw || pw === 'Your password will appear here') {
-    showToast('No password to copy', {timeout:1200});
-    return;
-  }
-  await navigator.clipboard.writeText(pw);
-  showToast('Copied to clipboard');
-});
-regenerateBtn.addEventListener('click', ()=> generatePassword());
-
-generateBtn.addEventListener('click', ()=> {
+generateBtn.addEventListener('click', ()=>{
   const pw = generatePassword();
-  updateChecker(pw);
+  if(pw){ generatedPassword.textContent = pw; addHistory(pw); showToast('Password generated') }
+});
+regen.addEventListener('click', ()=> {
+  const cur = generatePassword();
+  if(cur){ generatedPassword.textContent = cur; addHistory(cur); }
+});
+copyGen.addEventListener('click', async ()=> {
+  const pw = generatedPassword.textContent.trim();
+  if(!pw || pw === 'Your password will appear here') return showToast('No password to copy');
+  await navigator.clipboard.writeText(pw); showToast('Copied to clipboard');
+});
+addToHistoryBtn.addEventListener('click', ()=> {
+  const pw = generatedPassword.textContent.trim();
+  if(!pw || pw === 'Your password will appear here') return showToast('Nothing to save');
+  addHistory(pw);
+});
+useTopSuggestion.addEventListener('click', ()=> {
+  const top = document.querySelector('.suggestion .pw');
+  if(top) { const v = top.textContent; generatedPassword.textContent = v; showToast('Applied top suggestion'); }
 });
 
-/* ========== Strength checker ========== */
-function calcStrength(pw){
+/* ===== strength checker (reused logic) ===== */
+const passwordInput = $('#passwordInput'), strengthFill = $('#strengthFill'), strengthText = $('#strengthText');
+const reqLen = $('#reqLen'), reqUpper = $('#reqUpper'), reqLower = $('#reqLower'), reqNumber = $('#reqNumber'), reqSymbol = $('#reqSymbol');
+
+function calcScore(pw){
   let score = 0;
   if(pw.length >= 8) score++;
   if(/[A-Z]/.test(pw)) score++;
   if(/[a-z]/.test(pw)) score++;
   if(/[0-9]/.test(pw)) score++;
   if(/[^A-Za-z0-9]/.test(pw)) score++;
-  return score; // 0..5
+  return score;
 }
-function updateChecker(pw){
-  pw = pw || checkerInput.value || '';
-  const score = calcStrength(pw);
-  const pct = Math.min(100, (score/5)*100);
+function updateStrengthUI(pw){
+  const score = calcScore(pw);
+  const pct = Math.floor((score/5)*100);
   strengthFill.style.width = pct + '%';
   strengthFill.className = 'strength-fill';
-  if(score <= 1){
-    strengthText.textContent = 'Very weak';
-    strengthFill.classList.add('meter-veryweak');
-  } else if(score === 2){
-    strengthText.textContent = 'Weak';
-    strengthFill.classList.add('meter-weak');
-  } else if(score === 3){
-    strengthText.textContent = 'Fair';
-    strengthFill.classList.add('meter-fair');
-  } else if(score === 4){
-    strengthText.textContent = 'Good';
-    strengthFill.classList.add('meter-good');
-  } else {
-    strengthText.textContent = 'Excellent';
-    strengthFill.classList.add('meter-strong');
-  }
+  if(score <= 1){ strengthFill.classList.add('s-veryweak'); strengthText.textContent='Very weak'; }
+  else if(score === 2){ strengthFill.classList.add('s-weak'); strengthText.textContent='Weak'; }
+  else if(score === 3){ strengthFill.classList.add('s-fair'); strengthText.textContent='Fair'; }
+  else if(score === 4){ strengthFill.classList.add('s-good'); strengthText.textContent='Good'; }
+  else { strengthFill.classList.add('s-strong'); strengthText.textContent='Strong'; }
 
-  // requirements
-  reqLen.textContent = (pw.length >= 8 ? '✅' : '❌') + ' At least 8 chars';
-  reqUpper.textContent = (/[A-Z]/.test(pw) ? '✅' : '❌') + ' Uppercase';
-  reqLower.textContent = (/[a-z]/.test(pw) ? '✅' : '❌') + ' Lowercase';
-  reqNum.textContent = (/[0-9]/.test(pw) ? '✅' : '❌') + ' Number';
-  reqSym.textContent = (/[^A-Za-z0-9]/.test(pw) ? '✅' : '❌') + ' Symbol';
-}
-checkerInput.addEventListener('input', ()=> updateChecker());
-
-/* suggest (make a strong suggestion) */
-suggestBtn.addEventListener('click', ()=>{
-  // make a high-quality suggestion with many categories
-  const suggested = generatePassword({length: 16, uppercase:true, lowercase:true, numbers:true, symbols:true});
-  checkerInput.value = suggested;
-  updateChecker(suggested);
-  showToast('Suggestion created (16 chars)');
-});
-
-/* export & download */
-exportBtn.addEventListener('click', ()=>{
-  const arr = getHistory();
-  if(arr.length === 0) { showToast('Nothing to export'); return; }
-  const blob = new Blob([JSON.stringify(arr, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'password-history.json'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('Exported history');
-});
-
-downloadAllBtn.addEventListener('click', ()=>{
-  const html = document.documentElement.outerHTML;
-  const blob = new Blob([html], {type:'text/html'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'password-tools-page.html'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('Downloaded current page');
-});
-
-/* clear history & reset */
-clearHistoryBtn.addEventListener('click', ()=> {
-  if(confirm('Clear saved history?')) clearHistory();
-});
-resetBtn.addEventListener('click', ()=> {
-  if(!confirm('Reset everything (settings + history + theme)?')) return;
-  LS.removeItem(LS_KEYS.HISTORY);
-  LS.removeItem(LS_KEYS.SETTINGS);
-  LS.removeItem(LS_KEYS.THEME);
-  loadSettings();
-  renderHistory();
-  setTheme('light');
-  showToast('Reset complete');
-});
-
-/* save settings */
-saveSettingBtn.addEventListener('click', saveSettings);
-
-/* theme toggle button */
-themeBtn.addEventListener('click', ()=>{
-  const current = document.body.getAttribute('data-theme') || 'light';
-  const next = current === 'light' ? 'dark' : 'light';
-  setTheme(next);
-});
-
-/* length slider live label */
-lengthSlider.addEventListener('input', ()=>{
-  lenLabel.textContent = lengthSlider.value;
-});
-
-/* clickable chk labels toggle underlying input */
-$$('.chk').forEach(el=>{
-  el.addEventListener('click', ()=> {
-    const inp = el.querySelector('input');
-    inp.checked = !inp.checked;
-    el.style.opacity = inp.checked ? 1 : 0.7;
-  });
-});
-
-/* import history if file provided (drag & drop could be added) */
-window.addEventListener('DOMContentLoaded', ()=>{
-  renderHistory();
-  // load saved settings into UI
-  loadSettings();
-  // first generated password if none
-  if(getHistory().length === 0){
-    generatePassword();
-  } else {
-    // display most recent in main display for convenience
-    const cur = getHistory()[0];
-    if(cur) generatedPassword.textContent = cur;
-  }
-  // apply initial checker preview
-  updateChecker(checkerInput.value);
-});
-
-/* small helpers for keyboard accessibility */
-document.addEventListener('keydown', (e)=>{
-  if(e.ctrlKey && e.key.toLowerCase() === 'g'){ // Ctrl+G generate
-    e.preventDefault(); generateBtn.click();
-  } else if(e.ctrlKey && e.key.toLowerCase() === 'c'){ // Ctrl+C copy (when focus on display)
-    if(document.activeElement === generatedPassword) copyBtn.click();
-  }
-});
-</script>
-</body>
-</html>
+  reqLen.
