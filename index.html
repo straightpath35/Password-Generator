@@ -430,5 +430,73 @@ function updateStrengthUI(pw){
   else if(score === 4){ strengthFill.classList.add('s-good'); strengthText.textContent='Good'; }
   else { strengthFill.classList.add('s-strong'); strengthText.textContent='Strong'; }
 
-  reqLen.
+  reqLen.textContent = (pw.length >= 8 ? '✅' : '❌') + ' At least 8 characters';
+  reqUpper.textContent = (/[A-Z]/.test(pw) ? '✅' : '❌') + ' Uppercase letter';
+  reqLower.textContent = (/[a-z]/.test(pw) ? '✅' : '❌') + ' Lowercase letter';
+  reqNumber.textContent = (/[0-9]/.test(pw) ? '✅' : '❌') + ' Number';
+  reqSymbol.textContent = (/[^A-Za-z0-9]/.test(pw) ? '✅' : '❌') + ' Symbol';
+}
+
+passwordInput.addEventListener('input', (e)=>{
+  const pw = e.target.value;
+  updateStrengthUI(pw);
+});
+
+/* ===== enhancer feature ===== */
+const userInput = $('#userInput');
+const enhanceBtn = $('#enhanceBtn');
+const suggestionsArea = $('#suggestionsArea');
+const applyTop = $('#applyTop');
+const copyAll = $('#copyAll');
+
+function enhancePassword(base){
+  if(!base) return [];
+  const maps = {'a':'@','A':'4','e':'3','E':'€','i':'1','I':'!','o':'0','O':'°','s':'$','S':'5'};
+  function tweak(s){
+    return s.split('').map(ch=>maps[ch]||ch).join('')
+      .replace(/[A-Za-z]/g, c => Math.random()<0.4 ? (Math.random()<0.5?c.toUpperCase():c.toLowerCase()) : c)
+      .replace(/(\d)/g, d => Math.random()<0.3 ? d + '!@#$%&*'[Math.floor(Math.random()*8)] : d)
+      .slice(0,32);
+  }
+  const suggestions = [];
+  for(let i=0;i<4;i++) suggestions.push(tweak(base));
+  return suggestions;
+}
+
+enhanceBtn.addEventListener('click', ()=>{
+  const base = userInput.value.trim();
+  if(!base) return showToast('Enter a word or phrase');
+  const list = enhancePassword(base);
+  suggestionsArea.innerHTML = '';
+  list.forEach(pw=>{
+    const div = document.createElement('div');
+    div.className = 'suggestion';
+    div.innerHTML = `<div class="pw">${pw}</div><button class="btn ghost small" data-copy="${pw}">Copy</button>`;
+    suggestionsArea.appendChild(div);
+  });
+  showToast('Suggestions ready');
+});
+
+suggestionsArea.addEventListener('click', (e)=>{
+  const copy = e.target.getAttribute('data-copy');
+  if(copy){ navigator.clipboard.writeText(copy); showToast('Copied'); }
+});
+
+applyTop.addEventListener('click', ()=>{
+  const top = suggestionsArea.querySelector('.pw');
+  if(top){ generatedPassword.textContent = top.textContent; addHistory(top.textContent); showToast('Applied top suggestion'); }
+});
+
+copyAll.addEventListener('click', ()=>{
+  const list = [...suggestionsArea.querySelectorAll('.pw')].map(x=>x.textContent).join('\n');
+  if(!list) return showToast('No suggestions');
+  navigator.clipboard.writeText(list); showToast('All copied');
+});
+
+/* ===== init ===== */
+loadSettings();
+renderHistory();
+</script>
+</body>
+</html>
  
