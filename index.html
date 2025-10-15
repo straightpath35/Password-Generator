@@ -15,19 +15,17 @@
     align-items:center;
     padding:20px;
   }
-/* === Stylish Fancy Buttons (Purple Gradient Glow Edition) === */
-/* === Base Style for All Buttons === */
+/* === All Buttons (Reset Defaults) === */
 button {
   border: none;
-  color: white;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease-in-out;
   border-radius: 10px;
   font-size: 16px;
+  transition: all 0.25s ease-in-out;
 }
 
-/* === Navigation Tabs (top section) === */
+/* === TAB BUTTONS (Password Generator / Checker Switch) === */
 .tab button {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
@@ -35,24 +33,27 @@ button {
   margin: 4px;
   backdrop-filter: blur(6px);
   box-shadow: 0 0 6px rgba(255,255,255,0.2);
+  text-shadow: 0 0 4px rgba(0,0,0,0.6);
 }
 
 .tab button:hover {
   background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 8px rgba(180,124,255,0.4);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(180,124,255,0.6);
 }
 
 .tab button.active {
   background: linear-gradient(135deg, #7b5cf7, #a279ff);
-  box-shadow: 0 0 10px rgba(162,121,255,0.8);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(162,121,255,0.9);
 }
 
-/* === Main Action Buttons (Generate / Check / Suggest) === */
-.action-btn {
+/* === MAIN ACTION BUTTONS (Generate / Check / Suggest) === */
+button.action-btn {
   background: linear-gradient(135deg, #6a5acd, #9b5cf7);
+  color: white;
   padding: 12px 22px;
   margin-top: 15px;
-  color: #fff;
   box-shadow: 0 0 12px rgba(155,92,247,0.4);
   letter-spacing: 0.4px;
   position: relative;
@@ -60,21 +61,21 @@ button {
 }
 
 /* Hover (Desktop) */
-.action-btn:hover {
+button.action-btn:hover {
   transform: scale(1.07);
   background: linear-gradient(135deg, #845ef7, #b47cff);
   box-shadow: 0 0 18px rgba(180,124,255,0.7);
 }
 
-/* Active (Phone tap / click) */
-.action-btn:active {
+/* Active (Phone Tap / Click) */
+button.action-btn:active {
   transform: scale(0.95);
   background: linear-gradient(135deg, #5a3dc0, #7c56e0);
   box-shadow: 0 0 10px rgba(91,63,193,0.6);
 }
 
-/* Glow animation on press */
-.action-btn::before {
+/* Glowing feedback pulse */
+button.action-btn::before {
   content: "";
   position: absolute;
   top: -50%;
@@ -87,7 +88,7 @@ button {
   transition: transform 0.4s ease, opacity 0.3s ease;
 }
 
-.action-btn:active::before {
+button.action-btn:active::before {
   transform: translate(-50%, -50%) scale(1);
   opacity: 1;
 }
