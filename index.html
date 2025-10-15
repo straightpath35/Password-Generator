@@ -15,6 +15,26 @@
     align-items:center;
     padding:20px;
   }
+   /* === Button Hover + Active Effects (Purple Theme) === */
+button {
+  transition: all 0.25s ease-in-out;
+}
+
+/* Hover effect for desktop */
+button:hover {
+  background: linear-gradient(135deg, #7b5cf7, #a279ff);
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(162, 121, 255, 0.7);
+  color: #fff;
+}
+
+/* Active effect for phones (tap feedback) */
+button:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #5a3dc0, #7c56e0);
+  box-shadow: 0 0 6px rgba(91, 63, 193, 0.6);
+  color: #fff;
+}
   .container{
     background:#fff;
     border-radius:18px;
