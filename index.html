@@ -16,24 +16,65 @@
     padding:20px;
   }
 /* === Stylish Fancy Buttons (Purple Gradient Glow Edition) === */
+/* === Base Style for All Buttons === */
 button {
-  background: linear-gradient(135deg, #6a5acd, #9b5cf7);
   border: none;
   color: white;
-  padding: 12px 22px;
-  border-radius: 12px;
-  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s ease-in-out;
-  box-shadow: 0 0 12px rgba(155, 92, 247, 0.4);
-  letter-spacing: 0.5px;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+/* === Navigation Tabs (top section) === */
+.tab button {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 10px 16px;
+  margin: 4px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 6px rgba(255,255,255,0.2);
+}
+
+.tab button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 8px rgba(180,124,255,0.4);
+}
+
+.tab button.active {
+  background: linear-gradient(135deg, #7b5cf7, #a279ff);
+  box-shadow: 0 0 10px rgba(162,121,255,0.8);
+}
+
+/* === Main Action Buttons (Generate / Check / Suggest) === */
+.action-btn {
+  background: linear-gradient(135deg, #6a5acd, #9b5cf7);
+  padding: 12px 22px;
+  margin-top: 15px;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(155,92,247,0.4);
+  letter-spacing: 0.4px;
   position: relative;
   overflow: hidden;
 }
 
-/* Add glowing pulse animation */
-button::before {
+/* Hover (Desktop) */
+.action-btn:hover {
+  transform: scale(1.07);
+  background: linear-gradient(135deg, #845ef7, #b47cff);
+  box-shadow: 0 0 18px rgba(180,124,255,0.7);
+}
+
+/* Active (Phone tap / click) */
+.action-btn:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #5a3dc0, #7c56e0);
+  box-shadow: 0 0 10px rgba(91,63,193,0.6);
+}
+
+/* Glow animation on press */
+.action-btn::before {
   content: "";
   position: absolute;
   top: -50%;
@@ -42,27 +83,11 @@ button::before {
   height: 200%;
   background: radial-gradient(circle at center, rgba(255,255,255,0.25), transparent 70%);
   transform: translate(-50%, -50%) scale(0);
-  transition: transform 0.4s ease, opacity 0.3s ease;
   opacity: 0;
-  pointer-events: none;
+  transition: transform 0.4s ease, opacity 0.3s ease;
 }
 
-/* Hover (Desktop) */
-button:hover {
-  transform: scale(1.07);
-  background: linear-gradient(135deg, #845ef7, #b47cff);
-  box-shadow: 0 0 18px rgba(180, 124, 255, 0.7);
-}
-
-/* Active (Phone Tap or Click) */
-button:active {
-  transform: scale(0.95);
-  background: linear-gradient(135deg, #5a3dc0, #7c56e0);
-  box-shadow: 0 0 10px rgba(91, 63, 193, 0.6);
-}
-
-/* Fancy glowing animation when pressed */
-button:active::before {
+.action-btn:active::before {
   transform: translate(-50%, -50%) scale(1);
   opacity: 1;
 }
