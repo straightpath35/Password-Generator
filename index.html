@@ -15,25 +15,56 @@
     align-items:center;
     padding:20px;
   }
-   /* === Button Hover + Active Effects (Purple Theme) === */
+/* === Stylish Fancy Buttons (Purple Gradient Glow Edition) === */
 button {
+  background: linear-gradient(135deg, #6a5acd, #9b5cf7);
+  border: none;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.25s ease-in-out;
+  box-shadow: 0 0 12px rgba(155, 92, 247, 0.4);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Hover effect for desktop */
+/* Add glowing pulse animation */
+button::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.25), transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hover (Desktop) */
 button:hover {
-  background: linear-gradient(135deg, #7b5cf7, #a279ff);
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(162, 121, 255, 0.7);
-  color: #fff;
+  transform: scale(1.07);
+  background: linear-gradient(135deg, #845ef7, #b47cff);
+  box-shadow: 0 0 18px rgba(180, 124, 255, 0.7);
 }
 
-/* Active effect for phones (tap feedback) */
+/* Active (Phone Tap or Click) */
 button:active {
   transform: scale(0.95);
   background: linear-gradient(135deg, #5a3dc0, #7c56e0);
-  box-shadow: 0 0 6px rgba(91, 63, 193, 0.6);
-  color: #fff;
+  box-shadow: 0 0 10px rgba(91, 63, 193, 0.6);
+}
+
+/* Fancy glowing animation when pressed */
+button:active::before {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
 }
   .container{
     background:#fff;
